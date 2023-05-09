@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <title>Lista de Tarefas</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fff">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <link rel="manifest" href="manifest.json">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  <script src="../model/Task.js"></script>
+
+  <!-- Hotjar Tracking Code for https://pedantic-clarke-ebf939.netlify.app/ -->
+	<script>
+		(function(h,o,t,j,a,r){
+			h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+			h._hjSettings={hjid:2434567,hjsv:6};
+			a=o.getElementsByTagName('head')[0];
+			r=o.createElement('script');r.async=1;
+			r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+			a.appendChild(r);
+		})(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+	</script>
+  
+</head>
+
+<body>
+
+  <div class="jumbotron text-center">
+    <h1>Lista de Tarefas</h1>
+  </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <h3>Lista de Tarefas</h3>
+          <table class="table table-striped tasks-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Descrição</th>
+              </tr>
+            </thead>
+            <button class="btn btn-primary" onclick="searchTask()">Carregar Tarefas</button>
+            <tbody id="taskList">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  <script>
+   function searchTask() {
+    var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://127.0.0.1:3000/task/",
+    "method": "GET"
+  }
+
+  $.ajax(settings).done(function (response) {
+    console.log(response);
+
+    $('#taskList').empty();
+
+    for (var i = 0; i < response.tasks.length; i++) {
+      var task = response.tasks[i];
+      var row = $('<tr></tr>');
+
+      var idCell = $('<td id="taskID"></td>').text(task.id);
+      row.append(idCell);
+
+      var nameCell = $('<td></td>').text(task.name);
+      row.append(nameCell);
+
+      var descriptionCell = $('<td></td>').text(task.description);
+      row.append(descriptionCell);
+
+      $('#taskList').append(row);
+    }
+  });
+}
+/* Service worker */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+      console.log('ServiceWorker registration successful with scope: ', registration.scope);
+    }, function(err) {
+      console.log('ServiceWorker registration failed: ', err);
+    });
+  });
+}
+  </script>
+</body>
+</html>
